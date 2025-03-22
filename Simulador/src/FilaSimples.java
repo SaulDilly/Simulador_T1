@@ -1,6 +1,6 @@
 public class FilaSimples {
 
-    private final int SERVIDORES = 2;
+    private final int SERVIDORES = 1;
     private final int CAPACIDADE_MAXIMA = 5;
     private final IntervaloTempo INTERVALO_CHEGADA = new IntervaloTempo(2, 5);
     private final IntervaloTempo INTERVALO_ATENDIMENTO = new IntervaloTempo(3, 5);
@@ -35,10 +35,10 @@ public class FilaSimples {
         }
 
         for (int i = 0; i < CAPACIDADE_MAXIMA + 1; i++) {
-            System.out.printf("%d: %.4f (%.4f%%)\n ", i, tempoEstado[i], tempoEstado[i]/tempoTotal*100);
+            System.out.printf("%d: %.4f (%.4f%%)\n", i, tempoEstado[i], tempoEstado[i]/tempoTotal*100);
         }
         System.out.println("Perdas: " + perdas);
-        System.out.println("Tempo total: " + tempoTotal);
+        System.out.printf("Tempo total: %.4f", tempoTotal);
     }
 
     private void chegada(Evento e) {
