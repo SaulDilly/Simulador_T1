@@ -10,7 +10,7 @@ public class PseudoRandom {
         lastPseudo = seed;
     }
 
-    public double getNext() {
+    public double nextRandom() {
         lastPseudo = (a * lastPseudo + c) % M; 
         return (double) lastPseudo / M;    
     }
