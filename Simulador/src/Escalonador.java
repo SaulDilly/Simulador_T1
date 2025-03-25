@@ -19,7 +19,7 @@ public class Escalonador {
     }
 
     public void agendaChegada(double tempoTotal, IntervaloTempo it) {
-        Evento e = new Evento(TipoEvento.CHEGADA, tempoTotal + + getRandom(it));
+        Evento e = new Evento(TipoEvento.CHEGADA, tempoTotal + getRandom(it));
         pq.add(e);
     }
 
