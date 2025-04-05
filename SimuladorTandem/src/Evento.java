@@ -15,6 +15,10 @@ public class Evento implements Comparable<Evento> {
     public boolean isSaida() {
         return tipo == TipoEvento.SAIDA;
     }
+    
+    public boolean isPassagem() {
+        return tipo == TipoEvento.PASSAGEM;
+    }
 
     public double getTempo() {
         return tempo;
