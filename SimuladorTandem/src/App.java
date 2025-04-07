@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class App {
 
     private Escalonador escalonador;
@@ -10,8 +12,11 @@ public class App {
 
     public static void main(String[] args) throws Exception {
         App app = new App();
-        app.fila1 = new Fila(2, 3, new IntervaloTempo(1, 4), new IntervaloTempo(3, 4));
-        app.fila2 = new Fila(1, 5, null, new IntervaloTempo(2, 3));
+
+        List<Fila> filas = LeitorDat.carregarFilas("filas.dat");
+        app.fila1 = filas.get(0);
+        app.fila2 = filas.get(1);
+
         app.escalonador = new Escalonador(app);
         app.executarSimulacao();
     }
@@ -23,9 +28,9 @@ public class App {
             event = escalonador.proximoEvento();
             tempoTotal = event.getTempo();
 
-            if (event.isChegada()) 
+            if (event.isChegada())
                 chegada(event);
-            else if (event.isSaida()) 
+            else if (event.isSaida())
                 saida(event);
             else if (event.isPassagem())
                 passagem(event);
@@ -44,7 +49,6 @@ public class App {
 
         System.out.printf("Tempo total: %.4f", tempoTotal);
     }
-
 
     private void chegada(Evento e) {
         fila1.acumulaTempo(e);
