@@ -24,6 +24,7 @@ public class App {
     }
 
     private void executarSimulacao() {
+        escalonador.agendaChegada(1.5, new IntervaloTempo(0, 0), fila1);
         Evento event;
 
         while (count > 0) {
@@ -59,13 +60,16 @@ public class App {
         if (fila1.getStatus() < fila1.getCapacidade()) {
             fila1.in();
             if (fila1.getStatus() <= fila1.getServidores()) {
-                escalonador.agendaPassagem(tempoTotal, fila1.getAtendimento());
+                if (random.nextRandom() < 0.7)
+                    escalonador.agendaPassagem(tempoTotal, fila1.getAtendimento(), null);
+                else
+                    escalonador.agendaSaida(tempoTotal, fila1.getAtendimento(), fila1);
             }
         } else {
             fila1.loss();
         }
 
-        escalonador.agendaChegada(tempoTotal, fila1.getChegada());
+        escalonador.agendaChegada(tempoTotal, fila1.getChegada(), fila1);
 
     }
 
@@ -75,13 +79,18 @@ public class App {
 
         fila1.out();
         if (fila1.getStatus() >= fila1.getServidores())
-            escalonador.agendaPassagem(tempoTotal, fila1.getAtendimento());
+            if (random.nextRandom() < 0.7)
+                escalonador.agendaPassagem(tempoTotal, fila1.getAtendimento(), null);
+            else 
+                escalonador.agendaSaida(tempoTotal, fila1.getAtendimento(), fila1); 
 
         if (fila2.getStatus() < fila2.getCapacidade()) {
             fila2.in();
             if (fila2.getStatus() <= fila2.getServidores()) {
-                escalonador.agendaSaida(tempoTotal, fila2.getAtendimento());
+                escalonador.agendaSaida(tempoTotal, fila2.getAtendimento(), fila2);
             }
+        } else {
+            fila2.loss();
         }
     }
 
@@ -89,10 +98,18 @@ public class App {
         fila1.acumulaTempo(e);
         fila2.acumulaTempo(e);
 
-        fila2.out();
-        if (fila2.getStatus() >= fila2.getServidores())
-            escalonador.agendaSaida(tempoTotal, fila2.getAtendimento());
-
+        if (e.getFila() == fila1) {
+            fila1.out();
+            if (fila1.getStatus() >= fila1.getServidores())
+                if (random.nextRandom() < 0.7)
+                    escalonador.agendaPassagem(tempoTotal, fila1.getAtendimento(), null);
+                else
+                    escalonador.agendaSaida(tempoTotal, fila1.getAtendimento(), fila1);
+        } else {
+            fila2.out();
+            if (fila2.getStatus() >= fila2.getServidores())
+                escalonador.agendaSaida(tempoTotal, fila2.getAtendimento(), fila2);
+        }
     }
 
     public void decCount() {

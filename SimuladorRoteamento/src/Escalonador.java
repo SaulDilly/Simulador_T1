@@ -8,7 +8,6 @@ public class Escalonador {
     public Escalonador(PseudoRandom random) {
         pq = new PriorityQueue<>();
         this.random = random;        
-        agendaChegada(1.5, new IntervaloTempo(0, 0));
     }
 
     public Evento proximoEvento() {
@@ -16,18 +15,18 @@ public class Escalonador {
 
     }
 
-    public void agendaChegada(double tempoTotal, IntervaloTempo it) {
-        Evento e = new Evento(TipoEvento.CHEGADA, tempoTotal + getRandom(it));
+    public void agendaChegada(double tempoTotal, IntervaloTempo it, Fila f) {
+        Evento e = new Evento(TipoEvento.CHEGADA, tempoTotal + getRandom(it), f);
         pq.add(e);
     }
     
-    public void agendaPassagem(double tempoTotal, IntervaloTempo it) {
-        Evento e = new Evento(TipoEvento.PASSAGEM, tempoTotal + getRandom(it));
+    public void agendaPassagem(double tempoTotal, IntervaloTempo it, Fila f) {
+        Evento e = new Evento(TipoEvento.PASSAGEM, tempoTotal + getRandom(it), f);
         pq.add(e);
     }
 
-    public void agendaSaida(double tempoTotal, IntervaloTempo it) {
-        Evento e = new Evento(TipoEvento.SAIDA, tempoTotal + getRandom(it));
+    public void agendaSaida(double tempoTotal, IntervaloTempo it, Fila f) {
+        Evento e = new Evento(TipoEvento.SAIDA, tempoTotal + getRandom(it), f);
         pq.add(e);
     }
 
