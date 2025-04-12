@@ -4,12 +4,10 @@ public class Escalonador {
 
     private PriorityQueue<Evento> pq;
     private PseudoRandom random;
-    private App app;
     
-    public Escalonador(App app) {
+    public Escalonador(PseudoRandom random) {
         pq = new PriorityQueue<>();
-        random = new PseudoRandom(2879);
-        this.app = app;
+        this.random = random;        
         agendaChegada(1.5, new IntervaloTempo(0, 0));
     }
 
@@ -34,7 +32,6 @@ public class Escalonador {
     }
 
     public double getRandom(IntervaloTempo it) {
-        app.decCount();
         return (it.getLimFinal() - it.getLimInicial()) * random.nextRandom() + it.getLimInicial();
     }
 }

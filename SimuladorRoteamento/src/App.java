@@ -3,6 +3,7 @@ import java.util.List;
 public class App {
 
     private Escalonador escalonador;
+    PseudoRandom random;
     private Fila fila1;
     private Fila fila2;
 
@@ -17,7 +18,8 @@ public class App {
         app.fila1 = filas.get(0);
         app.fila2 = filas.get(1);
 
-        app.escalonador = new Escalonador(app);
+        app.random = new PseudoRandom(2879, app);
+        app.escalonador = new Escalonador(app.random);
         app.executarSimulacao();
     }
 
