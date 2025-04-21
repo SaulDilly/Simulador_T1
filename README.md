@@ -6,9 +6,7 @@ ___
 ## Acesse o 'filas.dat' para ver as configurações da fila.
 
 - Linhas iniciadas com '#' são comentários e são ignoradas
-- Cada linha representa uma fila, com suas informações seguindo o seguinte modelo:
-
-#### Indice da fila|Servidores|Capacidade|Chegada Mínima|Chegada Máxima|Atendimento mínimo|Atendimento maximo
+- O arquivo aceita configuração de chegada na fila, assim como as configurações da fila e a conexão entre elas
 
 ## Ao final da execução, o simulador exibe no console:
 
