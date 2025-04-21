@@ -1,22 +1,24 @@
 import java.util.List;
+import java.util.Map;
 
 public class App {
 
     private Escalonador escalonador;
     PseudoRandom random;
-    private Fila fila1;
-    private Fila fila2;
+
+    private LeitorDat leitor;
+    private List<Fila> filas;
+    private Map<Fila, List<Map.Entry<Double, Fila>>> topologia;
 
     private double tempoTotal;
 
-    public int count = 100000;
+    public int count = 50000;
 
     public static void main(String[] args) throws Exception {
         App app = new App();
 
-        List<Fila> filas = LeitorDat.carregarFilas("filas.dat");
-        app.fila1 = filas.get(0);
-        app.fila2 = filas.get(1);
+        app.leitor = new LeitorDat();
+        app.leitor.carregarFilas("filas.dat");
 
         app.random = new PseudoRandom(2879, app);
         app.escalonador = new Escalonador(app.random);
@@ -24,7 +26,16 @@ public class App {
     }
 
     private void executarSimulacao() {
-        escalonador.agendaChegada(1.5, new IntervaloTempo(0, 0), fila1);
+
+        filas = leitor.getFilas();
+        topologia = leitor.getTopologia();
+        
+        for (Map.Entry<Integer, Double> entry : leitor.getChegadas().entrySet()) {
+            Integer filaIndex = entry.getKey();
+            Double chegada = entry.getValue();
+            escalonador.agendaChegada(chegada, filas.get(filaIndex - 1).getChegada(), null, filas.get(filaIndex - 1));
+        }
+
         Evento event;
 
         while (count > 0) {
@@ -37,83 +48,110 @@ public class App {
                 saida(event);
             else if (event.isPassagem())
                 passagem(event);
-
         }
 
-        System.out.println("Tempos fila 1:");
-        fila1.printTempos();
-        System.out.println("Tempos fila 2:");
-        fila2.printTempos();
+        int i = 1;
+        for (Fila f : filas) {
+            System.out.println("Tempos fila " + i + ":");
+            f.printTempos();
+            i++;
+        }
 
-        System.out.println("Perdas fila 1:");
-        System.out.println(fila1.getPerda());
-        System.out.println("Perdas fila 2:");
-        System.out.println(fila2.getPerda());
+        i = 1;
+        for (Fila f : filas) {
+            if (f.getPerda() > 0) 
+                System.out.println("Perdas fila " + i + ":" + f.getPerda());
+            i++;
+        }
 
         System.out.printf("Tempo total: %.4f", tempoTotal);
     }
 
     private void chegada(Evento e) {
-        fila1.acumulaTempo(e);
-        fila2.acumulaTempo(e);
+        acumulaTempo(e);
+        Fila destino = e.getFilaDestino();
 
-        if (fila1.getStatus() < fila1.getCapacidade()) {
-            fila1.in();
-            if (fila1.getStatus() <= fila1.getServidores()) {
-                if (random.nextRandom() < 0.7)
-                    escalonador.agendaPassagem(tempoTotal, fila1.getAtendimento(), null);
-                else
-                    escalonador.agendaSaida(tempoTotal, fila1.getAtendimento(), fila1);
+        if (destino.getStatus() < destino.getCapacidade()) {
+            destino.in();
+            if (destino.getStatus() <= destino.getServidores()) {
+                agendaProximoEvento(destino);
             }
         } else {
-            fila1.loss();
+            destino.loss();
         }
 
-        escalonador.agendaChegada(tempoTotal, fila1.getChegada(), fila1);
-
+        escalonador.agendaChegada(tempoTotal, destino.getChegada(), null, destino);
     }
 
     private void passagem(Evento e) {
-        fila1.acumulaTempo(e);
-        fila2.acumulaTempo(e);
+        acumulaTempo(e);
 
-        fila1.out();
-        if (fila1.getStatus() >= fila1.getServidores())
-            if (random.nextRandom() < 0.7)
-                escalonador.agendaPassagem(tempoTotal, fila1.getAtendimento(), null);
-            else 
-                escalonador.agendaSaida(tempoTotal, fila1.getAtendimento(), fila1); 
+        Fila origem = e.getFilaOrigem();
+        Fila destino = e.getFilaDestino();
 
-        if (fila2.getStatus() < fila2.getCapacidade()) {
-            fila2.in();
-            if (fila2.getStatus() <= fila2.getServidores()) {
-                escalonador.agendaSaida(tempoTotal, fila2.getAtendimento(), fila2);
+        origem.out();
+        if (origem.getStatus() >= origem.getServidores()) {
+            agendaProximoEvento(origem);
+        }
+
+        if (destino.getStatus() < destino.getCapacidade()) {
+            destino.in();
+            if (destino.getStatus() <= destino.getServidores()) {
+                escalonador.agendaSaida(tempoTotal, destino.getAtendimento(), destino, null);
             }
         } else {
-            fila2.loss();
+            destino.loss();
         }
     }
 
     private void saida(Evento e) {
-        fila1.acumulaTempo(e);
-        fila2.acumulaTempo(e);
+        acumulaTempo(e);
 
-        if (e.getFila() == fila1) {
-            fila1.out();
-            if (fila1.getStatus() >= fila1.getServidores())
-                if (random.nextRandom() < 0.7)
-                    escalonador.agendaPassagem(tempoTotal, fila1.getAtendimento(), null);
-                else
-                    escalonador.agendaSaida(tempoTotal, fila1.getAtendimento(), fila1);
-        } else {
-            fila2.out();
-            if (fila2.getStatus() >= fila2.getServidores())
-                escalonador.agendaSaida(tempoTotal, fila2.getAtendimento(), fila2);
+        Fila origem = e.getFilaOrigem();
+
+        origem.out();
+
+        if (origem.getStatus() >= origem.getServidores()) {
+            agendaProximoEvento(origem);
         }
+    }
+
+    private void agendaProximoEvento(Fila origem) {
+        Fila destino = getDestino(origem);
+
+        if (destino != null) {
+            escalonador.agendaPassagem(tempoTotal, origem.getAtendimento(), origem, destino);
+        } else {
+            escalonador.agendaSaida(tempoTotal, origem.getAtendimento(), origem, null);
+        }
+    }
+
+    private Fila getDestino(Fila origem) {
+        if (!topologia.containsKey(origem)) {
+            return null;
+        }
+
+        double r = random.nextRandom();
+        double sum = 0.0;
+        List<Map.Entry<Double, Fila>> probList = topologia.get(origem);
+
+        for (Map.Entry<Double, Fila> entry : probList) {
+            sum += entry.getKey();
+            if (r < sum) {
+                System.out.printf("Routing from queue %d to queue %d with probability %.2f\n",
+                    filas.indexOf(origem) + 1, filas.indexOf(entry.getValue()) + 1, entry.getKey());
+                return entry.getValue();
+            }
+        }
+
+        return null;
     }
 
     public void decCount() {
         count--;
     }
 
+    private void acumulaTempo(Evento e) {
+        filas.forEach(f -> f.acumulaTempo(e));
+    }
 }

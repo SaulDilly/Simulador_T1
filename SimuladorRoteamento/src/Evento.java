@@ -2,12 +2,14 @@ public class Evento implements Comparable<Evento> {
 
     private TipoEvento tipo;
     private double tempo;
-    private Fila fila;
+    private Fila origem;
+    private Fila destino;
 
-    public Evento (TipoEvento tipo, double tempo, Fila fila) {
+    public Evento (TipoEvento tipo, double tempo, Fila origem, Fila destino) {
         this.tempo = tempo;
         this.tipo = tipo;
-        this.fila = fila;
+        this.origem = origem;
+        this.destino = destino;
     }
 
     public boolean isChegada() {
@@ -26,8 +28,12 @@ public class Evento implements Comparable<Evento> {
         return tempo;
     }
 
-    public Fila getFila() {
-        return fila;
+    public Fila getFilaOrigem() {
+        return origem;
+    }
+
+    public Fila getFilaDestino() {
+        return destino;
     }
 
     @Override

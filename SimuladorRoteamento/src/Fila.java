@@ -65,7 +65,8 @@ public class Fila {
     public void printTempos() {
 
         for (int i = 0; i < capacidade + 1; i++) {
-            System.out.printf("%d: %.4f (%.4f%%)\n", i, tempoEstado[i], tempoEstado[i]/tempoTotal*100);
+            if (tempoEstado[i] > 0)
+                System.out.printf("%d: %.4f (%.4f%%)\n", i, tempoEstado[i], tempoEstado[i]/tempoTotal*100);
         }
     }
 }

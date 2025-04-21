@@ -15,18 +15,18 @@ public class Escalonador {
 
     }
 
-    public void agendaChegada(double tempoTotal, IntervaloTempo it, Fila f) {
-        Evento e = new Evento(TipoEvento.CHEGADA, tempoTotal + getRandom(it), f);
+    public void agendaChegada(double tempoTotal, IntervaloTempo it, Fila origem, Fila destino) {
+        Evento e = new Evento(TipoEvento.CHEGADA, tempoTotal + getRandom(it), origem, destino);
         pq.add(e);
     }
     
-    public void agendaPassagem(double tempoTotal, IntervaloTempo it, Fila f) {
-        Evento e = new Evento(TipoEvento.PASSAGEM, tempoTotal + getRandom(it), f);
+    public void agendaPassagem(double tempoTotal, IntervaloTempo it, Fila origem, Fila destino) {
+        Evento e = new Evento(TipoEvento.PASSAGEM, tempoTotal + getRandom(it), origem, destino);
         pq.add(e);
     }
 
-    public void agendaSaida(double tempoTotal, IntervaloTempo it, Fila f) {
-        Evento e = new Evento(TipoEvento.SAIDA, tempoTotal + getRandom(it), f);
+    public void agendaSaida(double tempoTotal, IntervaloTempo it, Fila origem, Fila destino) {
+        Evento e = new Evento(TipoEvento.SAIDA, tempoTotal + getRandom(it), origem, destino);
         pq.add(e);
     }
 
