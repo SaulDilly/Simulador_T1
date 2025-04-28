@@ -1,0 +1,40 @@
+# Configuração das filas para o simulador
+
+*chegadas:
+    1: 3.0
+
+*filas:
+    1: 
+        servidores: 1
+        capacidade: 0
+        chegadaMinima: 2
+        chegadaMaxima: 4
+        servicoMinimo: 1
+        servicoMaximo: 2
+    2:
+        servidores: 2
+        capacidade: 5
+        servicoMinimo: 4
+        servicoMaximo: 8
+    3: 
+        servidores: 2
+        capacidade: 10
+        servicoMinimo: 5
+        servicoMaximo: 15
+
+*topologia:
+-  origem: 1
+   destino: 2
+   probabilidade: 0.5
+-  origem: 1
+   destino: 3
+   probabilidade: 0.5
+-  origem: 2
+   destino: 1
+   probabilidade: 0.3
+-  origem: 2
+   destino: 3
+   probabilidade: 0.7
+-  origem: 3
+   destino: 2
+   probabilidade: 1.0

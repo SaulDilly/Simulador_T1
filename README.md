@@ -14,3 +14,6 @@ ___
 - Porcentagem de tempo em cada estado
 - Número de clientes perdidos em cada fila
 - Tempo total da simulação
+
+## Testes
+Foram realizados testes, mas o grupo não conseguiu comprovar os resultados nem identificar a causa.

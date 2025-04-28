@@ -18,7 +18,7 @@ public class App {
         App app = new App();
 
         app.leitor = new LeitorDat();
-        app.leitor.carregarFilas("filas.dat");
+        app.leitor.carregarFilas("SimuladorRoteamento/filas.dat");
 
         app.random = new PseudoRandom(2879, app);
         app.escalonador = new Escalonador(app.random);
@@ -138,8 +138,6 @@ public class App {
         for (Map.Entry<Double, Fila> entry : probList) {
             sum += entry.getKey();
             if (r < sum) {
-                System.out.printf("Routing from queue %d to queue %d with probability %.2f\n",
-                    filas.indexOf(origem) + 1, filas.indexOf(entry.getValue()) + 1, entry.getKey());
                 return entry.getValue();
             }
         }
