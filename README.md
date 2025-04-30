@@ -1,4 +1,4 @@
-# Simulador Filas Tandem
+# Simulador - Topologia genérica
 Alunos: Bruno Carlan e Saul Dilly
 
 ___
