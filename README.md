@@ -17,3 +17,4 @@ ___
 
 ## Testes
 Foram realizados testes, mas o grupo não conseguiu comprovar os resultados nem identificar a causa.
+Para valores muito baixos de aleatórios, o simulador manteve os mesmos resultados do simulador exemplo. Mas por algum motivo desconhecido, algo é diferente no fluxo do nosso simulador e do simulador exemplo. Suspeitamos fortemente de que há o consumo de algum aleatório indevidamente, mas não conseguimos comprovar esse problema.
